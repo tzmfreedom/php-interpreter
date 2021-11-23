@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/tzmfreedom/php-interpreter"
 	"os"
+
+	interpreter "github.com/tzmfreedom/php-interpreter"
 )
 
 func main() {
@@ -12,4 +13,3 @@ func main() {
 		panic(err)
 	}
 }
-

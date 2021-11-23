@@ -3,6 +3,9 @@ package interpreter
 import (
 	"errors"
 	"fmt"
+	"os"
+	"strconv"
+
 	"github.com/z7zmey/php-parser/node"
 	"github.com/z7zmey/php-parser/node/expr/binary"
 	"github.com/z7zmey/php-parser/node/scalar"
@@ -10,8 +13,6 @@ import (
 	"github.com/z7zmey/php-parser/php7"
 	"github.com/z7zmey/php-parser/visitor"
 	"github.com/z7zmey/php-parser/walker"
-	"os"
-	"strconv"
 )
 
 type Interpreter struct {
@@ -66,12 +67,82 @@ func (d *Interpreter) EnterNode(w walker.Walkable) bool {
 		r := d.pop()
 		d.push(l.(int) + r.(int))
 		return false
+	case *binary.Minus:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(int) - r.(int))
+		return false
 	case *binary.Mul:
 		n.Left.Walk(d)
 		l := d.pop()
 		n.Right.Walk(d)
 		r := d.pop()
 		d.push(l.(int) * r.(int))
+		return false
+	case *binary.Div:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(int) / r.(int))
+		return false
+	case *binary.Concat:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(string) + r.(string))
+		return false
+	case *binary.Mod:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(int) % r.(int))
+		return false
+	case *binary.Equal:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l == r)
+		return false
+	case *binary.NotEqual:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l != r)
+		return false
+	case *binary.Greater:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(int) > r.(int))
+		return false
+	case *binary.Smaller:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(int) < r.(int))
+		return false
+	case *binary.GreaterOrEqual:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(int) >= r.(int))
+		return false
+	case *binary.SmallerOrEqual:
+		n.Left.Walk(d)
+		l := d.pop()
+		n.Right.Walk(d)
+		r := d.pop()
+		d.push(l.(int) <= r.(int))
 		return false
 	}
 
